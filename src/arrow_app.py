@@ -42,6 +42,18 @@ def sort_records(connection):
     return sorted_records
 
 
+# 6. UPDATE EMAIL WITH USER ID OF 9
+def update_email(connection):
+    """Update email address for user with Id of 9 to 'coding@arrowheadcu.org'."""
+    cursor = connection.cursor()
+    cursor.execute("UPDATE users SET email ='coding@arrowheadcu.org' WHERE id = 9")
+    connection.commit()
+
+    cursor.execute("SELECT * FROM users WHERE id = 9")
+    updated_user = cursor.fetchone()
+    return updated_user
+
+
 def main():
     users = fetch_users(USERS_URL)
     print("#2. Display Records")
@@ -69,6 +81,13 @@ def main():
         print(
             f"ID: {r[0]}, Name: {r[1]}, Email: {r[3]}, Address: {r[6]}, {r[7]}, {r[8]}, {r[9]}"
         )
+
+        # 6. UPDATE EMAIL
+    updated_record = update_email(connection)
+    print(
+        f"#6. Update Email:"
+        f" ID: {updated_record[0]}, Name: {updated_record[1]}, Email: {updated_record[3]}, Address: {updated_record[6]}, {updated_record[7]}, {updated_record[8]}, {updated_record[9]}"
+    )
 
 
 if __name__ == "__main__":
