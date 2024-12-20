@@ -28,9 +28,39 @@ def create_table(connection):
             address_city TEXT,
             address_zipcode TEXT,
             geo_lat TEXT,
-            geo_lng TEXT
+            geo_lng TEXT,
+            company_name TEXT,
+            company_catch_phrase TEXT,
+            company_bs TEXT
         );
         """
         )
-        print("Table 'users' created or already exists.")
         connection.commit()
+
+
+# 4. INSERT RECORDS
+def insert_user(connection, user):
+    """Insert user data into users, addresses, geo, and companies tables"""
+    connection.execute(
+        """
+        INSERT INTO users (id, name, username, email, phone, website, address_street, address_suite, address_city, address_zipcode, geo_lat, geo_lng, company_name, company_catch_phrase, company_bs)
+        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);
+        """,
+        (
+            user["id"],
+            user["name"],
+            user["username"],
+            user["email"],
+            user["phone"],
+            user["website"],
+            user["address"]["street"],
+            user["address"]["suite"],
+            user["address"]["city"],
+            user["address"]["zipcode"],
+            user["address"]["geo"]["lat"],
+            user["address"]["geo"]["lng"],
+            user["company"]["name"],
+            user["company"]["catchPhrase"],
+            user["company"]["bs"],
+        ),
+    )

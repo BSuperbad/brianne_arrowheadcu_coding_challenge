@@ -27,15 +27,20 @@ def main():
     print("#2. Display Records")
     for user in users:
         print(
-            f"ID: {user['id']}, Name: {user['name']}, Username: {user['username']}, Email: {user['email']}, Address: {user['address']['street']} {user['address']['suite']}, {user['address']['city']}, {user['address']['zipcode']}, Phone: {user['phone']}, Website: {user['website']}, Company: {user['company']['name']}, {user['company']['catchPhrase']} "
+            f"ID: {user['id']}, Name: {user['name']}, Username: {user['username']}, Email: {user['email']}, Address: {user['address']['street']} {user['address']['suite']}, {user['address']['city']}, {user['address']['zipcode']}, Phone: {user['phone']}, Website: {user['website']}, Company: {user['company']['name']}, {user['company']['catchPhrase']}"
         )
 
     # connecting to db
     connection = user_database.create_connection()
 
-    # add table to db
+    # 3. CREATE SQL TABLE
     user_database.create_table(connection)
-    return connection
+
+    # 4. INSERT USER RECORDS INTO TABLE
+    for user in users:
+        user_database.insert_user(connection, user)
+        print("inserting users into db")
+    connection.commit()
 
 
 if __name__ == "__main__":
