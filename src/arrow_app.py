@@ -54,6 +54,17 @@ def update_email(connection, email, user_id):
     return updated_user
 
 
+# 7. FILTER BY LONGITUDE
+def filter_by_longitude(connection, geo_lng):
+    """Filter users by longitude greater than specified value & sorts by name ascending"""
+    cursor = connection.cursor()
+    cursor.execute(
+        "SELECT * FROM users WHERE CAST(geo_lng AS FLOAT) > ? ORDER BY name ASC ;",
+        (geo_lng,),
+    )
+    return cursor.fetchall()
+
+
 def main():
     users = fetch_users(USERS_URL)
     print("#2. Display Records")
@@ -82,12 +93,20 @@ def main():
             f"ID: {r[0]}, Name: {r[1]}, Email: {r[3]}, Address: {r[6]}, {r[7]}, {r[8]}, {r[9]}"
         )
 
-        # 6. UPDATE EMAIL OF ADDRESS WITH ID OF 9 TO `coding@arrowheadcu.org`
+    # 6. UPDATE EMAIL OF ADDRESS WITH ID OF 9 TO `coding@arrowheadcu.org`
     updated_record = update_email(connection, "coding@arrowheadcu.org", 9)
     print(
         f"#6. Update Email:"
         f" ID: {updated_record[0]}, Name: {updated_record[1]}, Email: {updated_record[3]}, Address: {updated_record[6]}, {updated_record[7]}, {updated_record[8]}, {updated_record[9]}"
     )
+
+    # 7. FILTER USERS TO ONLY RETRIEVE ALL USERS WITH LONGITUDE GREATER THAN -110.445
+    lng_filtered_records = filter_by_longitude(connection, "-110.445")
+    print(f"#7. Filtered by Longitude Greater than -110.445:")
+    for r in lng_filtered_records:
+        print(
+            f"ID: {r[0]}, Name: {r[1]}, Address: {r[6]}, {r[7]}, {r[8]}, {r[9]}, Longitude: {r[11]}"
+        )
 
 
 if __name__ == "__main__":
