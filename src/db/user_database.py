@@ -72,5 +72,7 @@ def insert_user(connection, user):
             ),
         )
         connection.commit()
+    except sqlite3.IntegrityError as e:
+        raise e
     except sqlite3.Error as e:
         raise Exception(f"Error inserting data into table: {e}")
