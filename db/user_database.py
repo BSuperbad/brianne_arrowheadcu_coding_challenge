@@ -11,7 +11,6 @@ def create_connection(db_name="arrow_users.db"):
     return sqlite3.connect(db_name)
 
 
-# 3. CREATE SQL TABLE TO STORE THE USER DATA
 def create_table(connection):
     with connection:
         connection.execute(
@@ -38,7 +37,6 @@ def create_table(connection):
         connection.commit()
 
 
-# 4. INSERT RECORDS
 def insert_user(connection, user):
     """Insert user data into users, addresses, geo, and companies tables"""
     connection.execute(
