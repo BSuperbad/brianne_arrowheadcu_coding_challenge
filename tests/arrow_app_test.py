@@ -6,7 +6,7 @@ sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "../src"
 
 from unittest.mock import patch, MagicMock
 import sqlite3
-from src.arrow_app import fetch_users, sort_records, update_email, filter_by_longitude
+from arrow_app import fetch_users, sort_records, update_email, filter_by_longitude
 from src.db import user_database
 
 

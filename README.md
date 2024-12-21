@@ -2,6 +2,24 @@
 
 ## December 2024
 
+### How to Run the Project
+
+1. Clone the repository
+2. Navigate to project directory
+3. Set up virtual environment
+4. Activate virtual environment
+5. Install required dependencies
+6. Run application
+
+```bash
+   1. git clone git@github.com:BSuperbad/brianne_arrowheadcu_coding_challenge.git
+   2. cd brianne_arrowheadcu_coding_challenge
+   3. python3 -m venv venv
+   4. source venv/bin/activate
+   5. pip3 install -r requirements.txt
+   6. python3 arrow_app.py
+```
+
 ### Tasks Overview
 
 1. **Fetch User Data:**  
