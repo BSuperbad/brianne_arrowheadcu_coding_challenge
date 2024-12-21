@@ -1,6 +1,7 @@
 """Brianne Wilhelmi Arrowhead CU Coding Challenge December 2024"""
 
 import os
+import sqlite3
 import sys
 
 import requests
@@ -8,50 +9,65 @@ import requests
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "..")))
 
 
-from db import user_database
-from utilities import helpers
-
+from src.db import user_database
+from src.utilities import helpers
 
 USERS_URL = "https://jsonplaceholder.typicode.com/users"
 
 
 def fetch_users(url):
     """Fetching all user records from json url"""
-    response = requests.get(url)
-    response.raise_for_status()
-    return response.json()
+    try:
+        response = requests.get(url)
+        response.raise_for_status()
+        return response.json()
+    except requests.exceptions.RequestException as err:
+        print(f"Error fetching users: {err}")
+        return []
 
 
 def sort_records(connection):
     """Sort records by name, ignoring any title like 'Mr.' or 'Mrs.'"""
-    cursor = connection.cursor()
-    cursor.execute("SELECT * FROM users ORDER BY name ASC;")
-    records = cursor.fetchall()
-    sorted_records = sorted(records, key=lambda r: helpers.remove_titles(r[1]))
-    return sorted_records
+    try:
+        cursor = connection.cursor()
+        cursor.execute("SELECT * FROM users ORDER BY name ASC;")
+        records = cursor.fetchall()
+        sorted_records = sorted(records, key=lambda r: helpers.remove_titles(r[1]))
+        return sorted_records
+    except sqlite3.DatabaseError as err:
+        print(f"Error querying db: {err}")
+        return []
 
 
 def update_email(connection, email, user_id):
     """Update a user's email address by their user ID."""
-    cursor = connection.cursor()
-    cursor.execute("UPDATE users SET email = ? WHERE id = ?", (email, user_id))
-    connection.commit()
+    try:
+        cursor = connection.cursor()
+        cursor.execute("UPDATE users SET email = ? WHERE id = ?", (email, user_id))
+        connection.commit()
 
-    cursor.execute("SELECT * FROM users WHERE id = ?", (user_id,))
-    updated_user = cursor.fetchone()
-    return updated_user
+        cursor.execute("SELECT * FROM users WHERE id = ?", (user_id,))
+        updated_user = cursor.fetchone()
+        return updated_user
+    except sqlite3.DatabaseError as err:
+        print(f"Error updating email: {err}")
+        return None
 
 
 def filter_by_longitude(connection, geo_lng):
     """Filter users by longitude greater than specified value & sorts by name ascending"""
-    cursor = connection.cursor()
-    cursor.execute(
-        "SELECT * FROM users WHERE CAST(geo_lng AS FLOAT) > ? ORDER BY name ASC ;",
-        (geo_lng,),
-    )
-    records = cursor.fetchall()
-    sorted_records = sorted(records, key=lambda r: helpers.remove_titles(r[1]))
-    return sorted_records
+    try:
+        cursor = connection.cursor()
+        cursor.execute(
+            "SELECT * FROM users WHERE CAST(geo_lng AS FLOAT) > ? ORDER BY name ASC ;",
+            (geo_lng,),
+        )
+        records = cursor.fetchall()
+        sorted_records = sorted(records, key=lambda r: helpers.remove_titles(r[1]))
+        return sorted_records
+    except sqlite3.DatabaseError as err:
+        print(f"Error filtering records by lng: {err}")
+        return []
 
 
 def main():
@@ -93,7 +109,7 @@ def main():
     lng_filtered_records = filter_by_longitude(connection, "-110.445")
     print(f"#7. Filtered by Longitude Greater than -110.445:")
     for r in lng_filtered_records:
-        helpers.print_user_record(r, record_type="Filtered")
+        helpers.print_user_record(r, record_type="Filtered by Longitude")
 
 
 if __name__ == "__main__":
